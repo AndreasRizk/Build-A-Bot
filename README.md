@@ -39,15 +39,17 @@ RPI Software Design and Documentation Project. Customizable discord bot for user
 ```
 git clone https://github.com/Andy-8/Build-A-Bot
 ```
+Since this repository is private you will need to login with yout github account when cloning.
+
 <br>
 
-2. Next you need to get the libraries installed. I recomend that you don't do that globally but setup a virtual environment for the project and install them there. I set mine up by being inside my project folder and running:
+2. Next you need to get the libraries installed. I recomend that you don't do that globally but setup a virtual environment for the project and install them there. I set mine up by being inside my project folder "YOUR_PROJECT_PATH/Build-A-Bot" and running:
 ```
 python -m venv .venv
 ```
 This should create the virtual environment, then to get into the environment I run:
 ```
-source .venv/Scripts/activarte
+source .venv/Scripts/activate
 ```
 however I use git bash and this might be different on your system. If this is done right you will see (.venv) in your commandline prompt. Now to install the libraries, simply run:
 ```
@@ -57,13 +59,14 @@ this will install all the libraries listed in requirements.txt
 
 <br>
 
-3. Then to add the environment variables, create a ".env" file with will hold environment variables, in this case the bot token you should get from the discord developer portal and the guild id of our server. And the varaibles should be titled "TOKEN" and "GUILD_ID". For example here is my .env file:
+3. Then to add the environment variables, create a ".env" file in the "Build-A-Bot" folder, which will hold environment variables. In this case, those include the bot token you should've gotton from the discord developer portal and the guild id of our server. And the varaibles should be titled "TOKEN" and "GUILD_ID". For example here is my .env file:
 
 ```
 #.env
 TOKEN=OTM1MzQ4OTY3MTM3NTA5Mzc3.Ye9Vmw.QCYMMmKxMxjeuZmGlr0Nf_1TBsU
 GUILD_ID=933813327749070848
 ```
+
 <br>
 
 4. Now to run the bot, use the command:
