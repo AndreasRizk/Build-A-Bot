@@ -74,3 +74,5 @@ GUILD_ID=933813327749070848
 python -m bab
 ```
 which runs the folder bab as it has a \_\_init\_\_.py and \_\_main\_\_.py
+
+5. Really useful information: https://hikari-lightbulb.readthedocs.io/en/latest/
