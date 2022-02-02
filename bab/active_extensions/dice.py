@@ -14,7 +14,7 @@ async def cmd_say(ctx: lightbulb.MessageContext)->None:
         await ctx.respond("A dice cannot have less then 1 side")
     else:
         x = random.randint(1,int(ctx.options.sides))
-        await ctx.respond("@{} you rolled a {}!".format(ctx.options.user.id,str(x)))
+        await ctx.respond(f"@{ctx.option.user} you rolled a {str(x)}!")
 
 
 def load(bot: lightbulb.BotApp) -> None:
