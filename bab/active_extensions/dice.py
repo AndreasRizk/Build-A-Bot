@@ -5,16 +5,17 @@ import random
 plugin = lightbulb.Plugin("dice")
 
 @plugin.command
-@lightbulb.option("sides","Number of sides on the dice.", int, required=True)
-@lightbulb.option("user","user", hikari.Member, required=True)
+@lightbulb.option("sides","Number of sides on the dice. Go crazy with it!", int, required=True)
 @lightbulb.command("dice", "rolls a dice")
 @lightbulb.implements(lightbulb.SlashCommand,lightbulb.PrefixCommand)
 async def cmd_say(ctx: lightbulb.MessageContext)->None:
-    if ctx.options.sides < 1:
-        await ctx.respond("A dice cannot have less then 1 side")
+    if ctx.options.sides == 0:
+        await ctx.respond("0... Well that was pointless.")
+    elif ctx.options.sides < 0:
+        await ctx.respond("Negative sides... really!")
     else:
         x = random.randint(1,int(ctx.options.sides))
-        await ctx.respond(f"@{ctx.option.user} you rolled a {str(x)}!")
+        await ctx.respond(f"You rolled a {str(x)}!")
 
 
 def load(bot: lightbulb.BotApp) -> None:
