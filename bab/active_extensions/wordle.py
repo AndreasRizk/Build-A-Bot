@@ -4,67 +4,105 @@ import random
 import pickle
 from os.path import exists
 
+############################# CLASS ############################################
+
+# Game class which holds all the data for each wordle game
 class Game:
     def __init__(self, answer):
         self.answer = answer
         self.r_guesses = 6
         self.w_guesses = []
-    def guess(self,word):
-        self.r_guesses-=1
-        if self.r_guesses == 0:
-            return True
-        else:
-            return False
-    def compare(self,word):
+
+    def guess(self,word): # Function called when a user makes a guess
+        self.r_guesses-=1 # decrement remaining guesses
         result = ""
         finished = True
         for id,c in enumerate(word):
-            if word[id] == self.answer[id]:
+            if word[id] == self.answer[id]: # Char is correct in the right spot
                 result+=f"**{word[id]}**  "
                 continue
             a_pos = self.answer.find(c)
-            if a_pos == -1:
+            if a_pos == -1: # Char is incorrect
                 result+=f"~~{word[id]}~~  "
                 finished = False
-            else:
+            else: # Char is correct in the wrong spot
                 result+=f"{word[id]}  "
                 finished = False
-        self.w_guesses.append(result.upper())
-        return finished
 
-games = {}
+        self.w_guesses.append(result.upper()) # Add to list of guesses with formatting
+        return finished, self.r_guesses == 0 # return if finished and if last
 
-if (exists("bab/active_extensions/data/wordle_games")):
+############################# GLOBALS AND DATA MANAGEMENT ############################################
+
+colors = ["#8b0000","#ffff00","#00ff00"] # array used for printing different colors based on guess number
+
+games = {} # Dictionary that holds all wordle games with user.id as key and Game object as value
+
+if (exists("bab/active_extensions/data/wordle_games")): # Reads in saved wordle games on launch if they exist
     with open("bab/active_extensions/data/wordle_games","rb") as f:
         games = pickle.load(f)      
 
-def save():
+def save(): # Save funtion to call when games dictionary is updated
     with open("bab/active_extensions/data/wordle_games","wb") as f:
         pickle.dump(games,f)
 
 
+words = {} # Dictionary to hold all possible words
 
-words = {}
-
-if (exists("bab/active_extensions/data/wordle_words")):
+if (exists("bab/active_extensions/data/wordle_words")): # If the dictionary of words is saved load it in
     with open("bab/active_extensions/data/wordle_words","rb") as f:
         words = pickle.load(f)      
-else:
+else: # Otherwise create the dictionary from the txt and save it
     with open('words.txt') as f:
         for i in f:
             words[i.strip()] = 0
     with open("bab/active_extensions/data/wordle_words","wb") as f:
         pickle.dump(words,f)
-    
 
+############################# HELPER FUNCTIONS ############################################
+
+async def no_game_exists(ctx): # Prints error embed for if a game doesnt exist
+    embed = (
+    hikari.Embed(title="ERROR!", description="You do not have a game running!")
+    .add_field("Options", "Start one with /wordle play")
+    .set_footer(f"{ctx.user}'s game")
+    )
+    await ctx.respond(embed)
+
+async def game_update(ctx): # sends game update message with number of guesses remaining and all previous guesses
+    if ctx.user.id in games:
+        if (games[ctx.user.id].r_guesses == 6):
+            embed = (
+            hikari.Embed(title="6 guesses left",color="#00ff00")
+            .add_field("Guesses:", "No Guesses")
+            .set_footer(f"{ctx.user}'s game")
+            )
+            await ctx.respond(embed)
+        else:
+            guesses = ""
+            for guess in games[ctx.user.id].w_guesses:
+                    guesses+= guess + "\n"
+            embed = (
+            hikari.Embed(title=f"{games[ctx.user.id].r_guesses} guesses left",color=colors[round(games[ctx.user.id].r_guesses/2)])
+            .add_field("Guesses:", guesses)
+            .set_footer(f"{ctx.user}'s game")
+            )
+            await ctx.respond(embed)
+    else:
+        await no_game_exists(ctx)
+
+
+############################# LIGHTBULB PLUGIN COMMANDS ############################################
 
 plugin = lightbulb.Plugin("wordle")
 
-@plugin.command
+@plugin.command # Main wordle command group
 @lightbulb.command("wordle", "wordle game")
 @lightbulb.implements(lightbulb.SlashCommandGroup,lightbulb.PrefixCommandGroup)
 async def wordle(ctx: lightbulb.MessageContext)->None:
     pass
+
+                ################# COMMANDS WITHIN GROUP #########################
 
 @wordle.child
 @lightbulb.command("play", "start a wordle game")
@@ -97,12 +135,7 @@ async def play(ctx: lightbulb.MessageContext)->None:
 async def guess(ctx: lightbulb.MessageContext)->None:
     user_guess = ctx.options.word.lower().strip()
     if not ctx.user.id in games:
-        embed = (
-            hikari.Embed(title="ERROR!", description="You do not have a game running!")
-            .add_field("Options", "Start one with /wordle play")
-            .set_footer(f"{ctx.user}'s game")
-        )
-        await ctx.respond(embed)
+        await no_game_exists(ctx)
     elif not len(user_guess) == 5:
         embed = (
             hikari.Embed(title="ERROR!", description=f"\"{user_guess}\" is not of the correct length 5!")
@@ -118,13 +151,7 @@ async def guess(ctx: lightbulb.MessageContext)->None:
         )
         await ctx.respond(embed)
     else:
-        last = games[ctx.user.id].guess(user_guess)
-        finished = games[ctx.user.id].compare(user_guess)
-        guesses = ""
-        for guess in games[ctx.user.id].w_guesses:
-            guesses+= guess + "\n"
-
-        colors = ["#8b0000","#ffff00","#00ff00"]
+        finished, last = games[ctx.user.id].guess(user_guess)
 
         if last and not finished:
             embed = (
@@ -141,13 +168,8 @@ async def guess(ctx: lightbulb.MessageContext)->None:
             await ctx.respond(embed)
             games.pop(ctx.user.id)
         else:
-            embed = (
-            hikari.Embed(title=f"{games[ctx.user.id].r_guesses} guesses left",color=colors[round(games[ctx.user.id].r_guesses/2)])
-            .add_field("Guesses:", guesses)
-            .set_footer(f"{ctx.user}'s game")
-            )
-            await ctx.respond(embed)
-        
+            await game_update(ctx)
+
         save()
 
 @wordle.child
@@ -164,12 +186,7 @@ async def end(ctx: lightbulb.MessageContext)->None:
         )
         await ctx.respond(embed)
     else:
-        embed = (
-            hikari.Embed(title="ERROR!", description="You do not have a game running!")
-            .add_field("Options", "Start one with /wordle play")
-            .set_footer(f"{ctx.user}'s game")
-        )
-        await ctx.respond(embed)
+        await no_game_exists(ctx)
 
 
 @wordle.child
@@ -177,33 +194,12 @@ async def end(ctx: lightbulb.MessageContext)->None:
 @lightbulb.implements(lightbulb.SlashSubCommand,lightbulb.PrefixSubCommand)
 async def update(ctx: lightbulb.MessageContext)->None:
     if ctx.user.id in games:
-        if (games[ctx.user.id].r_guesses == 6):
-            embed = (
-            hikari.Embed(title="6 guesses left",color="#00ff00")
-            .add_field("Guesses:", "No Guesses")
-            .set_footer(f"{ctx.user}'s game")
-            )
-            await ctx.respond(embed)
-        else:
-            guesses = ""
-            colors = ["#8b0000","#ffff00","#00ff00"]
-            for guess in games[ctx.user.id].w_guesses:
-                    guesses+= guess + "\n"
-            embed = (
-            hikari.Embed(title=f"{games[ctx.user.id].r_guesses} guesses left",color=colors[round(games[ctx.user.id].r_guesses/2)])
-            .add_field("Guesses:", guesses)
-            .set_footer(f"{ctx.user}'s game")
-            )
-            await ctx.respond(embed)
+        await game_update(ctx)
     else:
-        embed = (
-            hikari.Embed(title="ERROR!", description="You do not have a game running!")
-            .add_field("Options", "Start one with /wordle play")
-            .set_footer(f"{ctx.user}'s game")
-        )
-        await ctx.respond(embed)
+        await no_game_exists(ctx)
 
 
+############################# LOADING AND UNLOADING THE PLUGIN ############################################
 def load(bot: lightbulb.BotApp) -> None:
     bot.add_plugin(plugin)
 
