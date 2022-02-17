@@ -2,3 +2,4 @@ python-dotenv
 hikari
 hikari-lightbulb
 tk
+markovify
