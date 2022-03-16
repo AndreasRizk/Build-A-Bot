@@ -58,9 +58,10 @@ def on_closing(bots):
     with open("gui/data/existing_bots","wb") as f:
         dill.dump(bots,f)
 
-
 def launch():
     root = tk.Tk()
+    root.title("Build-A-Bot")
+    root.iconbitmap("logo.ico")
 
     bots = []
 
@@ -70,6 +71,7 @@ def launch():
 
     canvas = tk.Canvas(root,height=700,width=700,bg="#A9A9A9")
     canvas.pack()
+
 
     frame = tk.Frame(root, bg="white")
     frame.place(relwidth=0.98,relheight=0.98, relx=0.01, rely=0.01)
