@@ -83,7 +83,7 @@ def launch():
         with open("gui/data/existing_bots","rb") as f:
             bots = dill.load(f)
 
-    canvas = tk.Canvas(root,height=700,width=700,bg="#FFFFFF")
+    canvas = tk.Canvas(root,height=800,width=1000,bg="#FFFFFF")
     canvas.pack()
 
 
@@ -93,7 +93,7 @@ def launch():
     sideBar = tk.Frame(frame, width=100, bg="white")
     sideBar.pack(fill=tk.Y, side=tk.LEFT)
 
-    workspace = tk.Frame(frame, width=600, bg="white")
+    workspace = tk.Frame(frame, width=root.winfo_screenwidth() - 100, bg="white")
     workspace.pack(fill=tk.Y, side=tk.RIGHT)
 
     print(len(bots))
@@ -102,33 +102,33 @@ def launch():
 
     logoimg = PhotoImage(file= "gui/bab.png")
     logo = tk.Button(sideBar, image= logoimg, borderwidth=0, fg="white", bg="#FFFFFF", command=githublink)
-    logo.pack( padx=20, pady=20)
+    logo.pack( padx=30, pady=30)
 
     #buttons on the sidebar
     existingbotsimg = PhotoImage(file= "gui/existingbots.png")
     existingbots = tk.Button(sideBar, image= existingbotsimg, borderwidth=0, fg="white", bg="#FFFFFF")
-    existingbots.pack( padx=20, pady=20)
+    existingbots.pack( padx=30, pady=30)
 
     createimg = PhotoImage(file= "gui/createbutton.png")
     create = tk.Button(sideBar, image= createimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
-    create.pack( padx=20, pady=20)
+    create.pack( padx=30, pady=30)
 
     fileexpimg = PhotoImage(file= "gui/files.png")
     fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
-    fileexp.pack( padx=20, pady=20)
+    fileexp.pack( padx=30, pady=30)
 
     #Initial help page
-    help_label = tk.Label(workspace, text="Help", font=('Helvatical bold',20), relief=tk.RIDGE, borderwidth= 0, width=27, height=3, anchor="w", bg="#FFFFFF", fg="black")
-    help_label.pack(pady=20)
-    textframe = tk.Frame(workspace, width=200, height=100, bg="white")
+    help_label = tk.Label(workspace, text="Help", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg="#FFFFFF", fg="black")
+    help_label.pack(side=tk.TOP, fill=BOTH)
+    textframe = tk.Frame(workspace, bg="white")
     textframe.pack()
     scroll = Scrollbar(textframe)
     scroll.pack(side=RIGHT, fill=Y)
-    help = Text(textframe, width=50, height=20, wrap=WORD, yscrollcommand = scroll.set)
-    for i in range(20): 
+    help = Text(textframe, font=('Arial',15), wrap=WORD, height=28, yscrollcommand = scroll.set)
+    for i in range(50): 
         help.insert(END,"this is some text\n")
     help.config(state=DISABLED)
-    help.pack(side=TOP, fill=X)
+    help.pack(side=tk.TOP, fill=BOTH)
     scroll.config(command=help.yview)
 
     print(len(bots))
