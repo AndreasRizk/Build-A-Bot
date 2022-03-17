@@ -26,7 +26,15 @@ class Bot:
 def githublink():
     webbrowser.open_new(r"https://github.com/Andy-8/Build-A-Bot")
 
+def clear(frame):
+    for widget in frame.winfo_children():
+        widget.destroy()
+
 def create_new_bot(bots, name, frame):
+    clear(frame)
+
+    for widget in frame.winfo_children():
+        widget.destroy()
     #nameBox.destroy()
     #title.destroy()
     newBot = Bot(name.get())
@@ -48,6 +56,8 @@ def edit_bot(bot):
 
 
 def create_bot(frame, bots):
+    clear(frame)
+
     print(len(bots))
     title = tk.Label( frame, text="Name of Bot", relief=tk.RIDGE, width=15)
     name = tk.Entry( frame, relief=tk.SUNKEN, width=10)
@@ -83,6 +93,9 @@ def launch():
     sideBar = tk.Frame(frame, width=100, bg="white")
     sideBar.pack(fill=tk.Y, side=tk.LEFT)
 
+    workspace = tk.Frame(frame, width=600, bg="white")
+    workspace.pack(fill=tk.Y, side=tk.RIGHT)
+
     print(len(bots))
     for bot in bots:
         tk.Button(sideBar, text=bot.get_name(), padx=10, pady=5, fg="black", bg="#A9A9A9", command=lambda : edit_bot(bot)).pack()
@@ -91,17 +104,32 @@ def launch():
     logo = tk.Button(sideBar, image= logoimg, borderwidth=0, fg="white", bg="#FFFFFF", command=githublink)
     logo.pack( padx=20, pady=20)
 
+    #buttons on the sidebar
     existingbotsimg = PhotoImage(file= "gui/existingbots.png")
     existingbots = tk.Button(sideBar, image= existingbotsimg, borderwidth=0, fg="white", bg="#FFFFFF")
     existingbots.pack( padx=20, pady=20)
 
     createimg = PhotoImage(file= "gui/createbutton.png")
-    create = tk.Button(sideBar, image= createimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(frame, bots))
+    create = tk.Button(sideBar, image= createimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
     create.pack( padx=20, pady=20)
 
     fileexpimg = PhotoImage(file= "gui/files.png")
-    fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(frame, bots))
+    fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
     fileexp.pack( padx=20, pady=20)
+
+    #Initial help page
+    help_label = tk.Label(workspace, text="Help", font=('Helvatical bold',20), relief=tk.RIDGE, borderwidth= 0, width=27, height=3, anchor="w", bg="#FFFFFF", fg="black")
+    help_label.pack(pady=20)
+    textframe = tk.Frame(workspace, width=200, height=100, bg="white")
+    textframe.pack()
+    scroll = Scrollbar(textframe)
+    scroll.pack(side=RIGHT, fill=Y)
+    help = Text(textframe, width=50, height=20, wrap=WORD, yscrollcommand = scroll.set)
+    for i in range(20): 
+        help.insert(END,"this is some text\n")
+    help.config(state=DISABLED)
+    help.pack(side=TOP, fill=X)
+    scroll.config(command=help.yview)
 
     print(len(bots))
     root.protocol("WM_DELETE_WINDOW", on_closing(bots))
