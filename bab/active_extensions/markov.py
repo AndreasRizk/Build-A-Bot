@@ -50,7 +50,6 @@ async def markov(ctx: lightbulb.Context) -> None:
     await ctx.respond(response)
 
 
-
 ############################# LOADING AND UNLOADING THE PLUGIN ############################################
 def load(bot: lightbulb.BotApp) -> None:
     bot.add_plugin(plugin)
