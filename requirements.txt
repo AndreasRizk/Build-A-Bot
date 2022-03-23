@@ -3,3 +3,5 @@ hikari
 hikari-lightbulb
 tk
 markovify
+text2emotion
+nltk
