@@ -7,6 +7,8 @@ import webbrowser
 from tkinter import *
 from os.path import exists
 
+global ghimg
+
 class Bot:
     def __init__(self, name):
         self.name_ = name
@@ -30,13 +32,38 @@ def clear(frame):
     for widget in frame.winfo_children():
         widget.destroy()
 
+def help(frame):
+    clear(frame)
+
+    #Initial help page
+    help_label = tk.Label(frame, text="Help", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg="#FFFFFF", fg="black")
+    help_label.grid(row=0, column=0, sticky=NW)
+
+    ghimg = PhotoImage(file= "gui/images/github.png")
+    github_button = tk.Button(frame, image= ghimg,  fg="white", bg="#FFFFFF", borderwidth=0,  command=githublink)
+    github_button.image = ghimg
+    github_button.grid(row=0, column=1, sticky=NE)
+    # github_button.pack(side=TOP, anchor=NE )
+    
+
+    
+    # help_label.pack(side=TOP, anchor=NW)
+    # textframe.pack()
+    scroll = Scrollbar(frame)
+    # scroll.pack(side=RIGHT, fill=Y)
+    scroll.grid(row=1, column=1, sticky=NS)
+
+    help = Text(frame, font=('Arial',15), wrap=WORD, height=28, width=60, yscrollcommand = scroll.set)
+    for i in range(50): 
+        help.insert(END,"this is some text\n")
+    help.config(state=DISABLED)
+    # help.pack(side=tk.TOP, fill=BOTH)
+    help.grid(row=1, column=0)
+    scroll.config(command=help.yview)
+
 def create_new_bot(bots, name, frame):
     clear(frame)
 
-    for widget in frame.winfo_children():
-        widget.destroy()
-    #nameBox.destroy()
-    #title.destroy()
     newBot = Bot(name.get())
     print(name.get())
     bots.append(newBot)
@@ -59,13 +86,25 @@ def create_bot(frame, bots):
     clear(frame)
 
     print(len(bots))
-    title = tk.Label( frame, text="Name of Bot", relief=tk.RIDGE, width=15)
-    name = tk.Entry( frame, relief=tk.SUNKEN, width=10)
+    name_title = tk.Label( frame, bg="#FFFFFF", text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
+    name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
 
-    run = tk.Button( frame, text="Run", padx=10, pady=5, fg="black", bg="#A9A9A9", command=lambda : create_new_bot(bots, name, frame))
+    token_title = tk.Label( frame, bg="#FFFFFF", text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
+    token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
 
-    title.pack()
+    guild_title = tk.Label( frame, bg="#FFFFFF", text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
+    guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+
+    spacer = tk.Label( frame, bg="#FFFFFF", anchor="center", pady=30, width=15)
+    run = tk.Button( frame, text="Run", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(bots, name, frame))
+
+    name_title.pack()
     name.pack()
+    token_title.pack()
+    token.pack()
+    guild_title.pack()
+    guild_id.pack()
+    spacer.pack()
     run.pack()
 
 def on_closing(bots):
@@ -100,36 +139,25 @@ def launch():
     for bot in bots:
         tk.Button(sideBar, text=bot.get_name(), padx=10, pady=5, fg="black", bg="#A9A9A9", command=lambda : edit_bot(bot)).pack()
 
-    logoimg = PhotoImage(file= "gui/bab.png")
-    logo = tk.Button(sideBar, image= logoimg, borderwidth=0, fg="white", bg="#FFFFFF", command=githublink)
+    #buttons on the sidebar
+    logoimg = PhotoImage(file= "gui/images/bab.png")
+    logo = tk.Button(sideBar, image= logoimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : help(workspace))
     logo.pack( padx=30, pady=30)
 
-    #buttons on the sidebar
-    existingbotsimg = PhotoImage(file= "gui/existingbots.png")
+    existingbotsimg = PhotoImage(file= "gui/images/existingbots.png")
     existingbots = tk.Button(sideBar, image= existingbotsimg, borderwidth=0, fg="white", bg="#FFFFFF")
     existingbots.pack( padx=30, pady=30)
 
-    createimg = PhotoImage(file= "gui/createbutton.png")
+    createimg = PhotoImage(file= "gui/images/createbutton.png")
     create = tk.Button(sideBar, image= createimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
     create.pack( padx=30, pady=30)
 
-    fileexpimg = PhotoImage(file= "gui/files.png")
+    fileexpimg = PhotoImage(file= "gui/images/files.png")
     fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
     fileexp.pack( padx=30, pady=30)
 
-    #Initial help page
-    help_label = tk.Label(workspace, text="Help", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg="#FFFFFF", fg="black")
-    help_label.pack(side=tk.TOP, fill=BOTH)
-    textframe = tk.Frame(workspace, bg="white")
-    textframe.pack()
-    scroll = Scrollbar(textframe)
-    scroll.pack(side=RIGHT, fill=Y)
-    help = Text(textframe, font=('Arial',15), wrap=WORD, height=28, yscrollcommand = scroll.set)
-    for i in range(50): 
-        help.insert(END,"this is some text\n")
-    help.config(state=DISABLED)
-    help.pack(side=tk.TOP, fill=BOTH)
-    scroll.config(command=help.yview)
+
+    help(workspace)
 
     print(len(bots))
     root.protocol("WM_DELETE_WINDOW", on_closing(bots))
