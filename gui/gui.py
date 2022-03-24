@@ -1,5 +1,5 @@
 import os
-import pickle
+import dill as pickle
 import subprocess
 import tkinter as tk
 import webbrowser
@@ -18,8 +18,9 @@ class Bot:
             self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_])
 
     def stop_bot(self):
-        self.obj_.kill()
-        self.obj_ = None
+        if not self.obj_ == None:
+            self.obj_.kill()
+            self.obj_ = None
 
 Bots = {}
 if (exists("gui/data/existing_bots")):
@@ -68,7 +69,7 @@ def help(frame):
 def bot_selection(frame):
     clear(frame)
     for bot in Bots.keys():
-        x = tk.Button(frame, text=bot, anchor="center", padx=30, pady=20, font=('Arial',12), fg="black", bg="#FFFFFF", command=lambda : print(bot))#edit_bot(frame, bot))
+        x = tk.Button(frame, text=bot, padx=30, pady=20, font=('Arial',12), fg="black", bg="#FFFFFF", command=lambda bot=bot: edit_bot(frame, bot))
         x.pack()
 
 def bot_running(frame, bot):
@@ -115,6 +116,10 @@ def create_bot(frame):
     spacer.pack()
     create.pack()
 
+def on_close():
+    for bot in Bots.values():
+        bot.stop_bot()
+
 def launch():
     root = tk.Tk()
     root.title("Build-A-Bot")
@@ -153,5 +158,5 @@ def launch():
 
     help(workspace)
 
-    root.protocol("WM_DELETE_WINDOW", save())
+    root.protocol("WM_DELETE_WINDOW", on_close())
     root.mainloop()
