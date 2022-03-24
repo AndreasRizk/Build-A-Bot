@@ -1,9 +1,10 @@
 import os
+import sys
 import lightbulb
 
 bot = lightbulb.BotApp(
-    os.environ["TOKEN"],
-    default_enabled_guilds=int(os.environ["GUILD_ID"]),
+    sys.argv[1],
+    default_enabled_guilds=int(sys.argv[2]),
     help_slash_command=True,
     prefix="!",
 )
