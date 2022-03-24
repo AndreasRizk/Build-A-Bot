@@ -1,12 +1,43 @@
 import os
+<<<<<<< HEAD
+import dill as pickle
+=======
 import pickle
 import dill
+>>>>>>> dev
 import subprocess
 import tkinter as tk
 import webbrowser
 from tkinter import *
 from os.path import exists
 
+<<<<<<< HEAD
+class Bot:
+    def __init__(self, name, token, guild_id):
+        self.name_ = name
+        self.token_ = token
+        self.guild_id_ = guild_id
+        self.obj_ = None
+
+    def run_bot(self):
+        if self.obj_ == None:
+            self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_])
+
+    def stop_bot(self):
+        if not self.obj_ == None:
+            self.obj_.kill()
+            self.obj_ = None
+
+Bots = {}
+if (exists("gui/data/existing_bots")):
+        with open("gui/data/existing_bots","rb") as f:
+            Bots = pickle.load(f)
+print(len(Bots))
+
+def save():
+    with open("gui/data/existing_bots","wb") as f:
+        pickle.dump(Bots,f)
+=======
 global ghimg
 
 class Bot:
@@ -24,6 +55,7 @@ class Bot:
 
     def get_name(self):
         return self.name_
+>>>>>>> dev
 
 def githublink():
     webbrowser.open_new(r"https://github.com/Andy-8/Build-A-Bot")
@@ -45,8 +77,11 @@ def help(frame):
     github_button.grid(row=0, column=1, sticky=NE)
     # github_button.pack(side=TOP, anchor=NE )
     
+<<<<<<< HEAD
+=======
 
     
+>>>>>>> dev
     # help_label.pack(side=TOP, anchor=NW)
     # textframe.pack()
     scroll = Scrollbar(frame)
@@ -54,13 +89,48 @@ def help(frame):
     scroll.grid(row=1, column=1, sticky=NS)
 
     help = Text(frame, font=('Arial',15), wrap=WORD, height=28, width=60, yscrollcommand = scroll.set)
+<<<<<<< HEAD
+    for i in range(1): 
+=======
     for i in range(50): 
+>>>>>>> dev
         help.insert(END,"this is some text\n")
     help.config(state=DISABLED)
     # help.pack(side=tk.TOP, fill=BOTH)
     help.grid(row=1, column=0)
     scroll.config(command=help.yview)
 
+<<<<<<< HEAD
+def bot_selection(frame):
+    clear(frame)
+    for bot in Bots.keys():
+        x = tk.Button(frame, text=bot, padx=30, pady=20, font=('Arial',12), fg="black", bg="#FFFFFF", command=lambda bot=bot: edit_bot(frame, bot))
+        x.pack()
+
+def bot_running(frame, bot):
+    pass
+
+def edit_bot(frame, botName):
+    clear(frame)
+    bot = Bots[botName]
+    run = tk.Button( frame, text="Run", anchor="center", padx=350, pady=50, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : bot.run_bot())
+    run.pack()
+
+    spacer = tk.Label( frame, bg="#FFFFFF", anchor="center", pady=30, width=15)
+    spacer.pack()
+
+    stop = tk.Button( frame, text="Stop", anchor="center", padx=350, pady=50, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : bot.stop_bot())
+    stop.pack()
+
+def create_new_bot(name, token, guild_id, frame):
+    Bots[name] = Bot(name, token, guild_id)
+    save()
+    edit_bot(frame,name)
+
+def create_bot(frame):
+    clear(frame)
+
+=======
 def create_new_bot(bots, name, frame):
     clear(frame)
 
@@ -86,6 +156,7 @@ def create_bot(frame, bots):
     clear(frame)
 
     print(len(bots))
+>>>>>>> dev
     name_title = tk.Label( frame, bg="#FFFFFF", text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
     name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
 
@@ -96,7 +167,11 @@ def create_bot(frame, bots):
     guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
 
     spacer = tk.Label( frame, bg="#FFFFFF", anchor="center", pady=30, width=15)
+<<<<<<< HEAD
+    create = tk.Button( frame, text="Create", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(name.get(), token.get(), guild_id.get(), frame))
+=======
     run = tk.Button( frame, text="Run", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(bots, name, frame))
+>>>>>>> dev
 
     name_title.pack()
     name.pack()
@@ -105,23 +180,34 @@ def create_bot(frame, bots):
     guild_title.pack()
     guild_id.pack()
     spacer.pack()
+<<<<<<< HEAD
+    create.pack()
+
+def on_close():
+    for bot in Bots.values():
+        bot.stop_bot()
+=======
     run.pack()
 
 def on_closing(bots):
     with open("gui/data/existing_bots","wb") as f:
         dill.dump(bots,f)
+>>>>>>> dev
 
 def launch():
     root = tk.Tk()
     root.title("Build-A-Bot")
     root.iconbitmap("logo.ico")
 
+<<<<<<< HEAD
+=======
     bots = []
 
     if (exists("gui/data/existing_bots")):
         with open("gui/data/existing_bots","rb") as f:
             bots = dill.load(f)
 
+>>>>>>> dev
     canvas = tk.Canvas(root,height=800,width=1000,bg="#FFFFFF")
     canvas.pack()
 
@@ -135,6 +221,24 @@ def launch():
     workspace = tk.Frame(frame, width=root.winfo_screenwidth() - 100, bg="white")
     workspace.pack(fill=tk.Y, side=tk.RIGHT)
 
+<<<<<<< HEAD
+    #buttons on the sidebar
+    logoimg = PhotoImage(file= "gui/images/bab.png")
+    logo = tk.Button(sideBar, image= logoimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : help(workspace))
+    logo.pack(padx=30, pady=30)
+
+    existingbotsimg = PhotoImage(file= "gui/images/existingbots.png")
+    existingbots = tk.Button(sideBar, image= existingbotsimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : bot_selection(workspace))
+    existingbots.pack( padx=30, pady=30)
+
+    createimg = PhotoImage(file= "gui/images/createbutton.png")
+    create = tk.Button(sideBar, image= createimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace))
+    create.pack(padx=30, pady=30)
+
+    fileexpimg = PhotoImage(file= "gui/images/files.png")
+    fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace))
+    fileexp.pack(padx=30, pady=30)
+=======
     print(len(bots))
     for bot in bots:
         tk.Button(sideBar, text=bot.get_name(), padx=10, pady=5, fg="black", bg="#A9A9A9", command=lambda : edit_bot(bot)).pack()
@@ -155,10 +259,15 @@ def launch():
     fileexpimg = PhotoImage(file= "gui/images/files.png")
     fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace, bots))
     fileexp.pack( padx=30, pady=30)
+>>>>>>> dev
 
 
     help(workspace)
 
+<<<<<<< HEAD
+    root.protocol("WM_DELETE_WINDOW", on_close())
+=======
     print(len(bots))
     root.protocol("WM_DELETE_WINDOW", on_closing(bots))
+>>>>>>> dev
     root.mainloop()
