@@ -6,6 +6,7 @@ import pickle
 import dill
 >>>>>>> dev
 import subprocess
+import shutil
 import tkinter as tk
 import webbrowser
 from tkinter import *
@@ -76,12 +77,18 @@ def help(frame):
     github_button.image = ghimg
     github_button.grid(row=0, column=1, sticky=NE)
     # github_button.pack(side=TOP, anchor=NE )
+<<<<<<< HEAD
     
 <<<<<<< HEAD
 =======
 
     
 >>>>>>> dev
+=======
+
+
+
+>>>>>>> 8537ae896378797e09bf79b04344254356696ad7
     # help_label.pack(side=TOP, anchor=NW)
     # textframe.pack()
     scroll = Scrollbar(frame)
@@ -90,10 +97,14 @@ def help(frame):
 
     help = Text(frame, font=('Arial',15), wrap=WORD, height=28, width=60, yscrollcommand = scroll.set)
 <<<<<<< HEAD
+<<<<<<< HEAD
     for i in range(1): 
 =======
     for i in range(50): 
 >>>>>>> dev
+=======
+    for i in range(50):
+>>>>>>> 8537ae896378797e09bf79b04344254356696ad7
         help.insert(END,"this is some text\n")
     help.config(state=DISABLED)
     # help.pack(side=tk.TOP, fill=BOTH)
@@ -147,6 +158,34 @@ def create_new_bot(bots, name, frame):
     stop = tk.Button(frame, text="Stop", padx=10, pady=5, fg="black", bg="#A9A9A9", command=bot.stop_bot)
     stop.pack()
 
+def includeExt(dir_name, exe):
+    if exists(dir_name+"/"+exe):
+        os.remove(dir_name+"/"+exe)
+    else:
+        shutil.copyfile("extensions/"+exe, dir_name+"/"+exe)
+
+def add_extensions(bots, name, frame):
+    botName = name.get()
+
+    clear(frame)
+
+    dir_name = "bab/"+botName+ "_extensions"
+    if not exists(dir_name):
+        os.mkdir(dir_name)
+
+    dir_list = os.listdir("extensions")
+    dir_list = [name for name in dir_list if 'py' in name.lower()]
+
+    vars = []
+    for i in range(len(dir_list)):
+        vars.append(tk.IntVar())
+
+        c1 = tk.Checkbutton(frame, text=dir_list[i],variable=vars[i], onvalue=1, offvalue=0, command=lambda exe = dir_list[i]:includeExt(dir_name, exe))
+        c1.pack()
+
+    run = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(bots, botName, frame))
+    run.pack()
+
 def edit_bot(bot):
     tk.Button(text=bot.get_name()+" start", padx=10, pady=5, fg="black", bg="#A9A9A9", command=bot.run_bot).pack()
     tk.Button(text=bot.get_name()+" stop", padx=10, pady=5, fg="black", bg="#A9A9A9", command=bot.stop_bot).pack()
@@ -168,10 +207,14 @@ def create_bot(frame, bots):
 
     spacer = tk.Label( frame, bg="#FFFFFF", anchor="center", pady=30, width=15)
 <<<<<<< HEAD
+<<<<<<< HEAD
     create = tk.Button( frame, text="Create", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(name.get(), token.get(), guild_id.get(), frame))
 =======
     run = tk.Button( frame, text="Run", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(bots, name, frame))
 >>>>>>> dev
+=======
+    run = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : add_extensions(bots, name, frame))
+>>>>>>> 8537ae896378797e09bf79b04344254356696ad7
 
     name_title.pack()
     name.pack()
@@ -265,9 +308,12 @@ def launch():
     help(workspace)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     root.protocol("WM_DELETE_WINDOW", on_close())
 =======
     print(len(bots))
+=======
+>>>>>>> 8537ae896378797e09bf79b04344254356696ad7
     root.protocol("WM_DELETE_WINDOW", on_closing(bots))
 >>>>>>> dev
     root.mainloop()
