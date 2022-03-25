@@ -16,12 +16,14 @@ class Bot:
 
     def run_bot(self):
         if self.obj_ == None:
-            self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_])
+            self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, "./bab/"+self.name_+"_extensions"])
 
     def stop_bot(self):
         if not self.obj_ == None:
             self.obj_.kill()
             self.obj_ = None
+        else:
+            print("none")
 
 Bots = {}
 if (exists("gui/data/existing_bots")):
@@ -87,7 +89,7 @@ def edit_bot(frame, botName):
     stop = tk.Button( frame, text="Stop", anchor="center", padx=350, pady=50, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : bot.stop_bot())
     stop.pack()
 
-def create_new_bot(name, token, guild_id, frame):
+def create_new_bot(name, token, guild_id,frame):
     Bots[name] = Bot(name, token, guild_id)
     save()
     edit_bot(frame,name)
@@ -99,32 +101,27 @@ def includeExt(dir_name, exe):
     else:
         shutil.copyfile("extensions/"+exe, dir_name+"/"+exe)
 
-def add_extensions(bots, name, frame):
-    botName = name.get()
-
+def add_extensions(name, token, guild_id, frame):
     clear(frame)
 
-    dir_name = "bab/"+botName+ "_extensions"
+    dir_name = "bab/"+name+ "_extensions"
     if not exists(dir_name):
         os.mkdir(dir_name)
 
     dir_list = os.listdir("extensions")
-    dir_list = [name for name in dir_list if 'py' in name.lower()]
+    dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
+
+    print(dir_list)
 
     vars = []
     for i in range(len(dir_list)):
+        print("hellp")
         vars.append(tk.IntVar())
-
-        c1 = tk.Checkbutton(frame, text=dir_list[i],variable=vars[i], onvalue=1, offvalue=0, command=lambda exe = dir_list[i]:includeExt(dir_name, exe))
+        c1 = tk.Checkbutton(frame, anchor="center", text=dir_list[i], variable=vars[i], onvalue=1, offvalue=0, command=lambda exe = dir_list[i]:includeExt(dir_name, exe))
         c1.pack()
 
-    run = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(bots, botName, frame))
+    run = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(name, token, guild_id,frame))
     run.pack()
-
-def edit_bot(bot):
-    tk.Button(text=bot.get_name()+" start", padx=10, pady=5, fg="black", bg="#A9A9A9", command=bot.run_bot).pack()
-    tk.Button(text=bot.get_name()+" stop", padx=10, pady=5, fg="black", bg="#A9A9A9", command=bot.stop_bot).pack()
-
 
 def create_bot(frame):
     clear(frame)
@@ -140,7 +137,7 @@ def create_bot(frame):
 
     spacer = tk.Label( frame, bg="#FFFFFF", anchor="center", pady=30, width=15)
 
-    create = tk.Button( frame, text="Create", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(name.get(), token.get(), guild_id.get(), frame))
+    create = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : add_extensions(name.get(), token.get(), guild_id.get(), frame))
 
     name_title.pack()
     name.pack()

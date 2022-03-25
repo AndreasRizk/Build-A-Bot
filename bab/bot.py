@@ -10,5 +10,5 @@ bot = lightbulb.BotApp(
 )
 
 def run():
-    bot.load_extensions_from("./bab/active_extensions")
+    bot.load_extensions_from(sys.argv[3])
     bot.run()

@@ -2,14 +2,6 @@ python-dotenv
 hikari
 hikari-lightbulb
 tk
-<<<<<<< HEAD
-<<<<<<< HEAD
-spotipy
-=======
->>>>>>> dev
-dill
-=======
 markovify
 nltk
 dill
->>>>>>> 8537ae896378797e09bf79b04344254356696ad7
