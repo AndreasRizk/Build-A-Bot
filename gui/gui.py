@@ -1,4 +1,4 @@
-import os
+import os, signal
 import dill as pickle
 import subprocess
 import shutil
@@ -15,15 +15,22 @@ class Bot:
         self.obj_ = None
 
     def run_bot(self):
+        print("here")
         if self.obj_ == None:
             self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, "./bab/"+self.name_+"_extensions"])
+        save()
+
 
     def stop_bot(self):
+        print(self.obj_.pid)
         if not self.obj_ == None:
-            self.obj_.kill()
+            os.kill(self.obj_.pid, signal.SIGKILL)
             self.obj_ = None
         else:
             print("none")
+            print(self.name_)
+            print(self.token_)
+        save()
 
 Bots = {}
 if (exists("gui/data/existing_bots")):
@@ -149,8 +156,7 @@ def create_bot(frame):
     create.pack()
 
 def on_close():
-    for bot in Bots.values():
-        bot.stop_bot()
+    pass
 
 def launch():
     root = tk.Tk()
