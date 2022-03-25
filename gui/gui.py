@@ -3,6 +3,7 @@ import dill as pickle
 import subprocess
 import shutil
 import tkinter as tk
+import tkinter.filedialog as tkf
 import webbrowser
 from tkinter import *
 from os.path import exists
@@ -101,8 +102,42 @@ def create_new_bot(name, token, guild_id,frame):
     save()
     edit_bot(frame,name)
 
+def open_file(frame):
+    file_path = tkf.askopenfile(mode='r', filetypes=[('Python files', '*py')])
+    if file_path is not None:
+        file_name = os.path.basename(file_path.name)
+        shutil.copyfile(file_path.name, "extensions/"+file_name)
+        avalable_extensions(frame)
 
-def includeExt(dir_name, exe):
+def avalable_extensions(frame):
+    clear(frame)
+
+    ph_label = tk.Label(frame, text="Package Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg="#FFFFFF", fg="black")
+    ph_label.grid(row=0, column=0, sticky=NW)
+
+    scroll = Scrollbar(frame)
+    scroll.grid(row=1, column=1, sticky=NS)
+
+    exes = Text(frame, font=('Arial',15), wrap=WORD, height=28, width=60, yscrollcommand = scroll.set)
+
+    dir_list = os.listdir("extensions")
+    dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
+
+    for name in dir_list:
+        exes.insert(END,name+"\n")
+    exes.config(state=DISABLED)
+    # exes.pack(side=tk.TOP, fill=BOTH)
+    exes.grid(row=1, column=0)
+    scroll.config(command=exes.yview)
+
+    new_exes = tk.Label(frame, text='Upload new extension ',bg="#FFFFFF", fg="black")
+    new_exes.grid(row=2, column=0, padx=10)
+
+    adharbtn = tk.Button(frame, text ='Choose File', command = lambda:open_file(frame))
+    adharbtn.grid(row=2, column=1)
+
+
+def include_ext(dir_name, exe):
     if exists(dir_name+"/"+exe):
         os.remove(dir_name+"/"+exe)
     else:
@@ -124,7 +159,7 @@ def add_extensions(name, token, guild_id, frame):
     for i in range(len(dir_list)):
         print("hellp")
         vars.append(tk.IntVar())
-        c1 = tk.Checkbutton(frame, anchor="center", text=dir_list[i], variable=vars[i], onvalue=1, offvalue=0, command=lambda exe = dir_list[i]:includeExt(dir_name, exe))
+        c1 = tk.Checkbutton(frame, anchor="center", text=dir_list[i], variable=vars[i], onvalue=1, offvalue=0, command=lambda exe = dir_list[i]:include_ext(dir_name, exe))
         c1.pack()
 
     run = tk.Button( frame, text="Next", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg="#FFFFFF", command=lambda : create_new_bot(name, token, guild_id,frame))
@@ -190,7 +225,7 @@ def launch():
     create.pack(padx=30, pady=30)
 
     fileexpimg = PhotoImage(file= "gui/images/files.png")
-    fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : create_bot(workspace))
+    fileexp = tk.Button(sideBar, image= fileexpimg, borderwidth=0, fg="white", bg="#FFFFFF", command=lambda : avalable_extensions(workspace))
     fileexp.pack(padx=30, pady=30)
 
     help(workspace)
