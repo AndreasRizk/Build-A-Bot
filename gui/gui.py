@@ -94,11 +94,13 @@ def on_close():
         bot.stop_bot()
 
 def update_bot(name, token, guild_id, frame, bot):
+    print(name,token,guild_id)
     if name == bot.name_ or len(name)==0:
         if not len(token) == 0:
             bot.token_ = token
         if not len(guild_id) == 0:
             bot.guild_id_ = guild_id
+        print("Same")
     else:
         if name in Bots:
             pass #error for creating duplicate bot
@@ -108,10 +110,11 @@ def update_bot(name, token, guild_id, frame, bot):
             token=bot.token_
         if len(guild_id) == 0:
             guild_id = bot.guild_id_
-        bot = Bots[name] = Bot(name, token, guild_id)
-        print(bot.name_,bot.guild_id_,bot.token_)
         Bots.pop(bot.name_)
-
+        bot = Bots[name] = Bot(name, token, guild_id)
+        
+        print("New")
+    print(bot.name_,bot.token_,bot.guild_id_)
     edit_bot(frame,bot)
 
 #############Frame Loaders##################
