@@ -94,13 +94,25 @@ def on_close():
         bot.stop_bot()
 
 def update_bot(name, token, guild_id, frame, bot):
-    if name in Bots:
-        return
-    dir_name = f"bab/{bot.name_}_extensions"
-    os.rename(dir_name,f"bab/{name}_extensions")
-    Bots[name] = Bot(name, token, guild_id)
-    Bots.pop(bot.name_)
-    edit_bot(frame,Bots[name])
+    if name == bot.name_ or len(name)==0:
+        if not len(token) == 0:
+            bot.token_ = token
+        if not len(guild_id) == 0:
+            bot.guild_id_ = guild_id
+    else:
+        if name in Bots:
+            pass #error for creating duplicate bot
+        dir_name = f"bab/{bot.name_}_extensions"
+        os.rename(dir_name,f"bab/{name}_extensions")
+        if len(token) == 0:
+            token=bot.token_
+        if len(guild_id) == 0:
+            guild_id = bot.guild_id_
+        bot = Bots[name] = Bot(name, token, guild_id)
+        print(bot.name_,bot.guild_id_,bot.token_)
+        Bots.pop(bot.name_)
+
+    edit_bot(frame,bot)
 
 #############Frame Loaders##################
 def bot_selection(frame):
@@ -122,7 +134,7 @@ def bot_selection(frame):
     
 def bot_running(frame, bot):
     clear(frame)
-    stop = tk.Button( frame, text="Stop", anchor="center", padx=350, pady=50, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
+    stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
     stop.pack()
 
 def edit_bot_data(frame,bot):
@@ -154,29 +166,31 @@ def edit_bot_data(frame,bot):
     create.pack()
 
 def edit_bot(frame, bot):
-    clear(frame)
-    
-    dir_name = f"bab/{bot.name_}_extensions"
-    if not exists(dir_name):
-        os.mkdir(dir_name)
-        os.mkdir(f"{dir_name}/data")
-
-    dir_list = os.listdir("extensions")
-    dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
-
-    for i in dir_list:
-        iVar = tk.IntVar()
-        c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=iVar, onvalue=0, offvalue=1, command=lambda exe = i:include_ext(dir_name, exe))
-        c1.pack()
-
-    edit = tk.Button( frame, text="Edit", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : edit_bot_data(frame,bot))
-    edit.pack()
-
-    run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
-    run.pack()
     if bot.running_:
         bot_running(frame,bot)
+    else:
+        clear(frame)
+        dir_name = f"bab/{bot.name_}_extensions"
+        if not exists(dir_name):
+            os.mkdir(dir_name)
+            os.mkdir(f"{dir_name}/data")
 
+        dir_list = os.listdir("extensions")
+        dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
+
+        count=0
+        for i in dir_list:
+            iVar = tk.IntVar()
+            c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=iVar, onvalue=0, offvalue=1, command=lambda exe = i:include_ext(dir_name, exe))
+            c1.grid(row=count//3,column=count%3, padx=10, pady=10)
+            count+=1
+
+        edit = tk.Button( frame, text="Edit", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : edit_bot_data(frame,bot))
+        edit.grid(row=count//3+1,column=1, padx=30, pady=30)
+
+        run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
+        run.grid(row=count//3+1,column=2, padx=30, pady=30)
+    
 def create_bot(frame):
     clear(frame)
 
@@ -291,7 +305,6 @@ def launch():
     fileexp.config(highlightthickness=0)
 
     help(workspace)
-
 
     #root.protocol("WM_DELETE_WINDOW", on_close())
     root.mainloop()
