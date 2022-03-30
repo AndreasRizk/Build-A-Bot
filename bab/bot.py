@@ -2,6 +2,8 @@ import os
 import sys
 import lightbulb
 
+data_path =  f"bab/{sys.argv[3]}/data/"
+
 bot = lightbulb.BotApp(
     sys.argv[1],
     default_enabled_guilds=int(sys.argv[2]),

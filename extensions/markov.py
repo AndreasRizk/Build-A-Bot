@@ -7,19 +7,20 @@ import markovify
 import os
 from os.path import exists
 import pickle
+from bab.bot import data_path
 
 plugin = lightbulb.Plugin("markov")
 
 text_models = {}
 
-if (exists("bab/active_extensions/data/text_models")): # Reads in saved markvov keys on launch if they exist
-    with open("bab/active_extensions/data/text_models","rb") as f:
+if (exists(f"{data_path}text_models")): # Reads in saved markvov keys on launch if they exist
+    with open(f"{data_path}text_models","rb") as f:
         text_models = pickle.load(f)  
 
-for file in os.listdir("bab/active_extensions/data/markov_user_data"):
+for file in os.listdir(f"{data_path}markov_user_data"):
     if file[:-4] in text_models:
         continue
-    f = open("bab/active_extensions/data/markov_user_data/" + file)
+    f = open(f"{data_path}markov_user_data/" + file)
     text = f.readlines()
     text_models[file[:-4]] = markovify.Text(text)
 

@@ -5,3 +5,5 @@ tk
 markovify
 nltk
 dill
+tkhtmlview
+markdown
