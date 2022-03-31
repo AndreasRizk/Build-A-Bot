@@ -9,18 +9,27 @@ from os.path import exists
 import pickle
 from bab.bot import data_path
 
+print(data_path)
+
+data_path = data_path[6:-1]
+
+#C:\Users\Liam Roberts\Documents\CSCI\SDD\Build-A-Bot\bab\1_extensions\data  \markov_user_data
+
 plugin = lightbulb.Plugin("markov")
 
 text_models = {}
+
+if (not os.path.exists(f"{data_path}/markov_user_data")):
+    os.makedirs(f"{data_path}/markov_user_data")
 
 if (exists(f"{data_path}text_models")): # Reads in saved markvov keys on launch if they exist
     with open(f"{data_path}text_models","rb") as f:
         text_models = pickle.load(f)  
 
-for file in os.listdir(f"{data_path}markov_user_data"):
+for file in os.listdir(f"{data_path}/markov_user_data"):
     if file[:-4] in text_models:
         continue
-    f = open(f"{data_path}markov_user_data/" + file)
+    f = open(f"{data_path}/markov_user_data/" + file)
     text = f.readlines()
     text_models[file[:-4]] = markovify.Text(text)
 
@@ -34,6 +43,14 @@ for file in os.listdir(f"{data_path}markov_user_data"):
 @lightbulb.implements(lightbulb.SlashCommand)
 
 async def markov(ctx: lightbulb.Context) -> None:
+
+    if (len(text_models) == 0):
+        await ctx.respond("User has not entered any Markov data files")
+        return
+
+    elif (ctx.options.user not in text_models.keys()):
+        await ctx.respond(f"Cannot find Markov data for {ctx.options.ctx}")
+        return
 
     count = ctx.options.quantity
     length = ctx.options.length

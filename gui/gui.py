@@ -35,8 +35,10 @@ class Bot:
         save()
         if not self.obj_ == None:
             if platform == "win32":
+                print(self.obj_.pid)
                 self.obj_.kill()
             else:
+                print(self.obj_.pid)
                 os.kill(self.obj_.pid, signal.SIGKILL)
 
         self.obj_ = None
@@ -92,8 +94,9 @@ def include_ext(dir_name, exe):
         shutil.copyfile("extensions/"+exe, dir_name+"/"+exe)
 
 def on_close():
-    for bot in Bots.values():
-        bot.stop_bot()
+    print("Would have errored")
+    #for bot in Bots.values():
+    #    bot.stop_bot()
 
 def update_bot(name, token, guild_id, frame, bot):
     print(name,token,guild_id)
