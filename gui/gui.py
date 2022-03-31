@@ -49,6 +49,8 @@ if (exists("gui/data/existing_bots")):
             Bots = pickle.load(f)
 
 def save():
+    if not (exists("gui/data/")):
+        os.mkdir("gui/data/")
     with open("gui/data/existing_bots","wb") as f:
         pickle.dump(Bots,f)
 
@@ -112,7 +114,7 @@ def update_bot(name, token, guild_id, frame, bot):
             guild_id = bot.guild_id_
         Bots.pop(bot.name_)
         bot = Bots[name] = Bot(name, token, guild_id)
-        
+
         print("New")
     print(bot.name_,bot.token_,bot.guild_id_)
     edit_bot(frame,bot)
@@ -134,7 +136,7 @@ def bot_selection(frame):
         x = tk.Button(frame, text=bot_name, padx=30, pady=20, font=('Arial',12), fg="black", bg=background, command=lambda bot=bot: edit_bot(frame, bot))
         x.grid(row=count//3,column=count%3,padx=90,pady=50)
         count+=1
-    
+
 def bot_running(frame, bot):
     clear(frame)
     stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
@@ -193,7 +195,7 @@ def edit_bot(frame, bot):
 
         run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
         run.grid(row=count//3+1,column=2, padx=30, pady=30)
-    
+
 def create_bot(frame):
     clear(frame)
 

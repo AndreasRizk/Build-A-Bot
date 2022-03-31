@@ -5,5 +5,7 @@ tk
 markovify
 nltk
 dill
+pillow
+requests
 tkhtmlview
 markdown
