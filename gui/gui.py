@@ -49,11 +49,17 @@ Bots = {}
 if (exists("gui/data/existing_bots")):
         with open("gui/data/existing_bots","rb") as f:
             Bots = pickle.load(f)
+            print("loaded")
+            print("bots = ")
+            print(Bots)
 
 def save():
     if not (exists("gui/data/")):
         os.mkdir("gui/data/")
     with open("gui/data/existing_bots","wb") as f:
+        print("dumped")
+        print("bots = ")
+        print(Bots)
         pickle.dump(Bots,f)
 
 
@@ -145,6 +151,13 @@ def bot_running(frame, bot):
     stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
     stop.pack()
 
+def bot_delete(frame, bot):
+    dir_name = f"bab/{bot.name_}_extensions"
+    shutil.rmtree(dir_name, ignore_errors=True)
+    del Bots[bot.name_]
+    save()
+    bot_selection(frame)
+
 def edit_bot_data(frame,bot):
     clear(frame)
 
@@ -192,6 +205,8 @@ def edit_bot(frame, bot):
             c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=iVar, onvalue=0, offvalue=1, command=lambda exe = i:include_ext(dir_name, exe))
             c1.grid(row=count//3,column=count%3, padx=10, pady=10)
             count+=1
+        delete = tk.Button( frame, text="Delete", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : bot_delete(frame,bot))
+        delete.grid(row=count//3+1,column=0, padx=30, pady=30)
 
         edit = tk.Button( frame, text="Edit", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : edit_bot_data(frame,bot))
         edit.grid(row=count//3+1,column=1, padx=30, pady=30)
