@@ -243,15 +243,15 @@ def create_bot(frame):
     spacer.pack()
     create.pack()
 
-def help(frame):
+def help(root, frame):
     clear(frame)
     #Initial help page
     ghimg = PhotoImage(file= "gui/images/github.png")
-    github_button = tk.Button(frame, image= ghimg, fg="white", bg=main_color, borderwidth=0,  command=githublink)
+    github_button = tk.Button(frame, image= ghimg, fg="white", bg=main_color, activebackground=main_color, borderwidth=0,  command=githublink)
     github_button.image = ghimg
     github_button.pack()
     github_button.config(highlightthickness=0)
-
+    github_button.config(highlightcolor=sidebar_color)
 
     html = ''
     with open('README.md', 'r') as f:
@@ -312,26 +312,27 @@ def launch():
 
     #buttons on the sidebar
     logoimg = PhotoImage(file= "gui/images/bab.png")
-    logo = tk.Button(sideBar, image= logoimg, border=0, command=lambda : help(workspace))
+    logo = tk.Button(sideBar, image= logoimg, activebackground=sidebar_color, border=0, command=lambda : help(root, workspace))
     logo.pack(padx=35, pady=35)
     logo.config(highlightthickness=0)
 
     existingbotsimg = PhotoImage(file= "gui/images/existingbots.png")
-    existingbots = tk.Button(sideBar, image= existingbotsimg, border=0, command=lambda : bot_selection(workspace))
+    existingbots = tk.Button(sideBar, image= existingbotsimg, activebackground=sidebar_color, border=0, command=lambda : bot_selection(workspace))
     existingbots.pack( padx=35, pady=35)
     existingbots.config(highlightthickness=0)
 
     createimg = PhotoImage(file= "gui/images/createbutton.png")
-    create = tk.Button(sideBar, image= createimg, border=0, command=lambda : create_bot(workspace))
+    create = tk.Button(sideBar, image= createimg, activebackground=sidebar_color, border=0, command=lambda : create_bot(workspace))
     create.pack(padx=35, pady=35)
     create.config(highlightthickness=0)
 
     fileexpimg = PhotoImage(file= "gui/images/files.png")
-    fileexp = tk.Button(sideBar, image= fileexpimg, border=0, command=lambda : package_handler(workspace))
+    fileexp = tk.Button(sideBar, image= fileexpimg, activebackground=sidebar_color, border=0, command=lambda : package_handler(workspace))
     fileexp.pack(padx=35, pady=35)
     fileexp.config(highlightthickness=0)
 
-    help(workspace)
+
+    help(root, workspace)
 
     #root.protocol("WM_DELETE_WINDOW", on_close())
     root.mainloop()
