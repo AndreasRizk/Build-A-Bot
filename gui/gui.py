@@ -197,12 +197,16 @@ def edit_bot(frame, bot):
             os.mkdir(f"{dir_name}/data")
 
         dir_list = os.listdir("extensions")
+        print(dir_list)
         dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
 
         count=0
         for i in dir_list:
-            iVar = tk.IntVar()
-            c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=iVar, onvalue=0, offvalue=1, command=lambda exe = i:include_ext(dir_name, exe))
+            print(dir_name+"/"+i)
+            print(exists(dir_name+"/"+i))
+            c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=IntVar(value=0), onvalue=1, offvalue=0, command=lambda exe = i:include_ext(dir_name, exe))
+            if exists(dir_name+"/"+i):
+                    c1.select()
             c1.grid(row=count//3,column=count%3, padx=10, pady=10)
             count+=1
         delete = tk.Button( frame, text="Delete", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : bot_delete(frame,bot))
