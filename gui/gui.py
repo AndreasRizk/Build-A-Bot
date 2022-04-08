@@ -1,5 +1,5 @@
 import os, signal
-import dill as pickle
+import pickle
 import subprocess
 import shutil
 import tkinter as tk
@@ -16,30 +16,25 @@ main_color = "#424549"
 button_color = "#7289da"
 
 #############CLASS##################
+runnning_bots = {}
+
 class Bot:
     def __init__(self, name, token, guild_id):
         self.name_ = name
         self.token_ = token
         self.guild_id_ = guild_id
-        self.obj_ = None
-        self.running_ = False
 
     def run_bot(self):
-        if self.obj_ == None:
-            self.obj_ = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, f"./bab/{self.name_}_extensions"])
-            self.running_ = True
+        if not self.name_ in runnning_bots:
+            runnning_bots[self.name_] = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, f"./bab/{self.name_}_extensions"])
             save()
 
     def stop_bot(self):
-        self.running_ = False
-        save()
-        if not self.obj_ == None:
+        if self.name_ in runnning_bots:
             if platform == "win32":
-                print(self.obj_.pid)
-                self.obj_.kill()
+                runnning_bots[self.name_].kill()
             else:
-                print(self.obj_.pid)
-                os.kill(self.obj_.pid, signal.SIGKILL)
+                os.kill(runnning_bots[self.name_].pid, signal.SIGKILL)
 
         self.obj_ = None
         save()
@@ -49,17 +44,10 @@ Bots = {}
 if (exists("gui/data/existing_bots")):
         with open("gui/data/existing_bots","rb") as f:
             Bots = pickle.load(f)
-            print("loaded")
-            print("bots = ")
-            print(Bots)
-
 def save():
     if not (exists("gui/data/")):
         os.mkdir("gui/data/")
     with open("gui/data/existing_bots","wb") as f:
-        print("dumped")
-        print("bots = ")
-        print(Bots)
         pickle.dump(Bots,f)
 
 
@@ -100,18 +88,15 @@ def include_ext(dir_name, exe):
         shutil.copyfile("extensions/"+exe, dir_name+"/"+exe)
 
 def on_close():
-    print("Would have errored")
-    #for bot in Bots.values():
-    #    bot.stop_bot()
+    for bot in Bots.values():
+        bot.stop_bot()
 
 def update_bot(name, token, guild_id, frame, bot):
-    print(name,token,guild_id)
     if name == bot.name_ or len(name)==0:
         if not len(token) == 0:
             bot.token_ = token
         if not len(guild_id) == 0:
             bot.guild_id_ = guild_id
-        print("Same")
     else:
         if name in Bots:
             pass #error for creating duplicate bot
@@ -124,8 +109,6 @@ def update_bot(name, token, guild_id, frame, bot):
         Bots.pop(bot.name_)
         bot = Bots[name] = Bot(name, token, guild_id)
 
-        print("New")
-    print(bot.name_,bot.token_,bot.guild_id_)
     edit_bot(frame,bot)
 
 #############Frame Loaders##################
@@ -140,7 +123,7 @@ def bot_selection(frame):
     count = 0
     for bot_name, bot in Bots.items():
         background = button_color
-        if bot.running_: #if running make color green
+        if bot.name_ in runnning_bots: #if running make color green
             background = "#008000"
         x = tk.Button(frame, text=bot_name, padx=30, pady=20, font=('Arial',12), fg="black", bg=background, command=lambda bot=bot: edit_bot(frame, bot))
         x.grid(row=count//3,column=count%3,padx=90,pady=50)
@@ -187,7 +170,7 @@ def edit_bot_data(frame,bot):
     create.pack()
 
 def edit_bot(frame, bot):
-    if bot.running_:
+    if bot.name_ in runnning_bots:
         bot_running(frame,bot)
     else:
         clear(frame)
@@ -197,13 +180,10 @@ def edit_bot(frame, bot):
             os.mkdir(f"{dir_name}/data")
 
         dir_list = os.listdir("extensions")
-        print(dir_list)
         dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
 
         count=0
         for i in dir_list:
-            print(dir_name+"/"+i)
-            print(exists(dir_name+"/"+i))
             c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=IntVar(value=0), onvalue=1, offvalue=0, command=lambda exe = i:include_ext(dir_name, exe))
             if exists(dir_name+"/"+i):
                     c1.select()

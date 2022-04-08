@@ -4,7 +4,6 @@ hikari-lightbulb
 tk
 markovify
 nltk
-dill
 pillow
 requests
 tkhtmlview
