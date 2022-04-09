@@ -24,12 +24,12 @@ class Bot:
         self.token_ = token
         self.guild_id_ = guild_id
 
-    def run_bot(self):
+    def run_bot(self): # Launches the bot 
         if not self.name_ in runnning_bots:
             runnning_bots[self.name_] = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, f"./bab/{self.name_}_extensions"])
             save()
 
-    def stop_bot(self):
+    def stop_bot(self): # Shuts down the bot
         if self.name_ in runnning_bots:
             if platform == "win32":
                 runnning_bots[self.name_].kill()
@@ -44,7 +44,7 @@ Bots = {}
 if (exists("gui/data/existing_bots")):
         with open("gui/data/existing_bots","rb") as f:
             Bots = pickle.load(f)
-def save():
+def save(): # Saves the updated bot data
     if not (exists("gui/data/")):
         os.mkdir("gui/data/")
     with open("gui/data/existing_bots","wb") as f:
@@ -55,43 +55,43 @@ def save():
 def githublink():
     webbrowser.open_new(r"https://github.com/Andy-8/Build-A-Bot")
 
-def clear(frame):
+def clear(frame): # clears current frame 
     for widget in frame.winfo_children():
         widget.destroy()
     frame.grid_propagate(0)
     frame.pack_propagate(0)
 
-def botKILL(frame,bot):
+def botKILL(frame,bot): # stops bot and loads edit_bot screen
     bot.stop_bot()
     edit_bot(frame,bot)
 
-def botRUN(frame,bot):
+def botRUN(frame,bot): # runs bot and load running bot screen
     bot.run_bot()
     bot_running(frame,bot)
 
-def create_new_bot(name, token, guild_id,frame):
+def create_new_bot(name, token, guild_id,frame): # creates nwe bot
     Bots[name] = Bot(name, token, guild_id)
     save()
     edit_bot(frame,Bots[name])
 
-def open_file(frame):
+def open_file(frame): # adds external file into bot extensiosn
     file_path = tkf.askopenfile(mode='r', filetypes=[('Python files', '*py')])
     if file_path is not None:
         file_name = os.path.basename(file_path.name)
         shutil.copyfile(file_path.name, "extensions/"+file_name)
         package_handler(frame)
 
-def include_ext(dir_name, exe):
+def include_ext(dir_name, exe): # includes an extentions in a bots extensions
     if exists(dir_name+"/"+exe):
         os.remove(dir_name+"/"+exe)
     else:
         shutil.copyfile("extensions/"+exe, dir_name+"/"+exe)
 
-def on_close():
+def on_close(): # shuts down all bots
     for bot in Bots.values():
         bot.stop_bot()
 
-def update_bot(name, token, guild_id, frame, bot):
+def update_bot(name, token, guild_id, frame, bot): # used to updated a bots infomation
     if name == bot.name_ or len(name)==0:
         if not len(token) == 0:
             bot.token_ = token
@@ -111,8 +111,15 @@ def update_bot(name, token, guild_id, frame, bot):
 
     edit_bot(frame,bot)
 
+def bot_delete(frame, bot): # deletes a bot
+    dir_name = f"bab/{bot.name_}_extensions"
+    shutil.rmtree(dir_name, ignore_errors=True)
+    del Bots[bot.name_]
+    save()
+    bot_selection(frame)
+
 #############Frame Loaders##################
-def bot_selection(frame):
+def bot_selection(frame): # select an already created bot
     clear(frame)
     if len(Bots)==0:
         no_bots = tk.Label(frame, text="You have not created any bots!", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
@@ -129,19 +136,13 @@ def bot_selection(frame):
         x.grid(row=count//3,column=count%3,padx=90,pady=50)
         count+=1
 
-def bot_running(frame, bot):
+def bot_running(frame, bot): # frame for a running bot
     clear(frame)
     stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
     stop.pack()
 
-def bot_delete(frame, bot):
-    dir_name = f"bab/{bot.name_}_extensions"
-    shutil.rmtree(dir_name, ignore_errors=True)
-    del Bots[bot.name_]
-    save()
-    bot_selection(frame)
 
-def edit_bot_data(frame,bot):
+def edit_bot_data(frame,bot): # frame to edit bot data
     clear(frame)
 
     name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
@@ -169,7 +170,7 @@ def edit_bot_data(frame,bot):
     spacer.pack()
     create.pack()
 
-def edit_bot(frame, bot):
+def edit_bot(frame, bot): # for editing a bots commands and running the bot
     if bot.name_ in runnning_bots:
         bot_running(frame,bot)
     else:
@@ -198,7 +199,7 @@ def edit_bot(frame, bot):
         run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
         run.grid(row=count//3+1,column=2, padx=30, pady=30)
 
-def create_bot(frame):
+def create_bot(frame): # fram for creating a new bot
     clear(frame)
 
     name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
@@ -223,7 +224,7 @@ def create_bot(frame):
     spacer.pack()
     create.pack()
 
-def help(root, frame):
+def help(root, frame): # initial help page frame
     clear(frame)
     #Initial help page
     ghimg = PhotoImage(file= "gui/images/github.png")
@@ -244,7 +245,7 @@ def help(root, frame):
     readme.pack(pady=15, padx=15, fill=BOTH)
     readme.fit_height()
 
-def package_handler(frame):
+def package_handler(frame): # package handling frame
     clear(frame)
 
     ph_label = tk.Label(frame, text="Package Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
@@ -271,7 +272,7 @@ def package_handler(frame):
     adharbtn = tk.Button(frame, text ='Choose File', bg=button_color, command = lambda:open_file(frame))
     adharbtn.grid(row=2, column=1)
 
-def launch():
+def launch(): # main tkinter loop which hold sidebar and launches help page initially
     root = tk.Tk()
     root.title("Build-A-Bot")
     root.iconbitmap("logo.ico")

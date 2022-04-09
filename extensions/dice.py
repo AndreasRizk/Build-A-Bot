@@ -4,7 +4,7 @@ import random
 
 plugin = lightbulb.Plugin("dice")
 
-@plugin.command
+@plugin.command # rolls a dice of any number of sides and returns the result to the user 
 @lightbulb.option("sides","Number of sides on the dice. Go crazy with it!", int, required=True)
 @lightbulb.command("dice", "rolls a dice")
 @lightbulb.implements(lightbulb.SlashCommand,lightbulb.PrefixCommand)

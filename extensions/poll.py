@@ -5,7 +5,7 @@ plugin = lightbulb.Plugin("poll")
 
 @plugin.command 
 @lightbulb.option("prompt","Poll prompt.", str, required=True)
-@lightbulb.command("poll", "A poll")
+@lightbulb.command("poll", "A poll") # Creates a poll in the channel based on users prompt
 @lightbulb.implements(lightbulb.SlashCommand,lightbulb.PrefixCommand)
 async def poll(ctx: lightbulb.MessageContext)->None:
         embed = (

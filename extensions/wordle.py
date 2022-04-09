@@ -107,7 +107,7 @@ async def wordle(ctx: lightbulb.MessageContext)->None:
                 ################# COMMANDS WITHIN GROUP #########################
 
 @wordle.child
-@lightbulb.command("play", "start a wordle game")
+@lightbulb.command("play", "start a wordle game") # starts a wordle game
 @lightbulb.implements(lightbulb.SlashSubCommand,lightbulb.PrefixSubCommand)
 async def play(ctx: lightbulb.MessageContext)->None:
     if ctx.user.id in games:
@@ -132,7 +132,7 @@ async def play(ctx: lightbulb.MessageContext)->None:
 
 @wordle.child
 @lightbulb.option("word","Your guess must be 5 characters long.", str, required=True)
-@lightbulb.command("guess", "Make a guess.")
+@lightbulb.command("guess", "Make a guess.") # allows user to make a guess for their wordle game
 @lightbulb.implements(lightbulb.SlashSubCommand,lightbulb.PrefixSubCommand)
 async def guess(ctx: lightbulb.MessageContext)->None:
     user_guess = ctx.options.word.lower().strip()
@@ -175,7 +175,7 @@ async def guess(ctx: lightbulb.MessageContext)->None:
         save()
 
 @wordle.child
-@lightbulb.command("end", "End your wordle game.")
+@lightbulb.command("end", "End your wordle game.") # ends a users wordle game
 @lightbulb.implements(lightbulb.SlashSubCommand,lightbulb.PrefixSubCommand)
 async def end(ctx: lightbulb.MessageContext)->None:
     if ctx.user.id in games:
@@ -192,7 +192,7 @@ async def end(ctx: lightbulb.MessageContext)->None:
 
 
 @wordle.child
-@lightbulb.command("update", "Resends your previous guesses.")
+@lightbulb.command("update", "Resends your previous guesses.") # sends an update regarding the users wordle game
 @lightbulb.implements(lightbulb.SlashSubCommand,lightbulb.PrefixSubCommand)
 async def update(ctx: lightbulb.MessageContext)->None:
     if ctx.user.id in games:

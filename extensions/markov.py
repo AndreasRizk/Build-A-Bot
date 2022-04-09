@@ -34,7 +34,7 @@ for file in os.listdir(f"{data_path}/markov_user_data"):
     text_models[file[:-4]] = markovify.Text(text)
 
 
-@plugin.command
+@plugin.command # allows the user to generate a number of statememnets with a certial lenght and emotion based on a perons markov chain
 @lightbulb.option("user","Provide user to emulate.", str, required=True)
 @lightbulb.option("quantity","Number of sentences to generate.", int, required=False)
 @lightbulb.option("length", "Length of sentences.", int, required=False)

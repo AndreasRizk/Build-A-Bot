@@ -6,7 +6,7 @@ plugin = lightbulb.Plugin("powerball")
 
 @plugin.command
 @lightbulb.option("money","How much money do you want to spend on tickets? ($2 per ticket)", int, required=True)
-@lightbulb.command("powerball", "play the powerball ($141 million)")
+@lightbulb.command("powerball", "play the powerball ($141 million)") # allows the user to test their luck against the powerball odds
 @lightbulb.implements(lightbulb.SlashCommand,lightbulb.PrefixCommand)
 async def powerball(ctx: lightbulb.MessageContext) -> None:
 	if(ctx.options.money >= 2):

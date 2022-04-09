@@ -6,7 +6,7 @@ import lightbulb
 
 plugin = lightbulb.Plugin("find")
 
-@plugin.command
+@plugin.command # Searches youtube based on user prompt and returns the top video
 @lightbulb.option("text", "test to search", modifier=lightbulb.commands.OptionModifier.CONSUME_REST)
 @lightbulb.command("find", description="search youtube")
 @lightbulb.implements(lightbulb.SlashCommand)

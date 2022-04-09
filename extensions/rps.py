@@ -6,7 +6,7 @@ plugin = lightbulb.Plugin("rps")
 
 @plugin.command
 @lightbulb.option("choice","\"rock\" for rock, \"paper\" for paper, or \"scissors\" for scissors", str, required=True)
-@lightbulb.command("rps", "play rock paper scissors")
+@lightbulb.command("rps", "play rock paper scissors") # allows the user to play a rock paper scissors game versus the bot
 @lightbulb.implements(lightbulb.SlashCommand,lightbulb.PrefixCommand)
 async def rps(ctx: lightbulb.Context) -> None:
 	list = ["rock", "paper", "scissors"]
