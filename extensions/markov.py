@@ -19,17 +19,17 @@ plugin = lightbulb.Plugin("markov")
 
 text_models = {}
 
-if (not os.path.exists(f"{data_path}/markov_user_data")):
-    os.makedirs(f"{data_path}/markov_user_data")
+if (not os.path.exists(f"extensions/data/markov_user_data")):
+    os.makedirs(f"extensions/data/markov_user_data")
 
-if (exists(f"{data_path}text_models")): # Reads in saved markvov keys on launch if they exist
-    with open(f"{data_path}text_models","rb") as f:
+if (exists(f"extensions/data/text_models")): # Reads in saved markvov keys on launch if they exist
+    with open(f"extensions/data/text_models","rb") as f:
         text_models = pickle.load(f)  
 
-for file in os.listdir(f"{data_path}/markov_user_data"):
+for file in os.listdir(f"extensions/data/markov_raw"):
     if file[:-4] in text_models:
         continue
-    f = open(f"{data_path}/markov_user_data/" + file)
+    f = open(f"extensions/data/markov_raw/" + file)
     text = f.readlines()
     text_models[file[:-4]] = markovify.Text(text)
 
@@ -49,7 +49,7 @@ async def markov(ctx: lightbulb.Context) -> None:
         return
 
     elif (ctx.options.user not in text_models.keys()):
-        await ctx.respond(f"Cannot find Markov data for {ctx.options.ctx}")
+        await ctx.respond(f"Cannot find Markov data for {ctx.options.user}")
         return
 
     count = ctx.options.quantity

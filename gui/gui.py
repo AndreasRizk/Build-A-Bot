@@ -26,7 +26,7 @@ class Bot:
 
     def run_bot(self): # Launches the bot 
         if not self.name_ in runnning_bots:
-            runnning_bots[self.name_] = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, f"./bab/{self.name_}_extensions"])
+            runnning_bots[self.name_] = subprocess.Popen(['python', '-m', 'bab', self.token_, self.guild_id_, f"{self.name_}_extensions"])
             save()
 
     def stop_bot(self): # Shuts down the bot
@@ -35,9 +35,8 @@ class Bot:
                 runnning_bots[self.name_].kill()
             else:
                 os.kill(runnning_bots[self.name_].pid, signal.SIGKILL)
-
-        self.obj_ = None
-        save()
+            self.obj_ = None
+            save()
 
 #############Data Management##################
 Bots = {}
