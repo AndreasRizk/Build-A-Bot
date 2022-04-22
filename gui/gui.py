@@ -35,7 +35,7 @@ class Bot:
                 runnning_bots[self.name_].kill()
             else:
                 os.kill(runnning_bots[self.name_].pid, signal.SIGKILL)
-            self.obj_ = None
+            runnning_bots.pop(self.name_)
             save()
 
 #############Data Management##################
@@ -89,6 +89,7 @@ def include_ext(dir_name, exe): # includes an extentions in a bots extensions
 def on_close(): # shuts down all bots
     for bot in Bots.values():
         bot.stop_bot()
+    sys.exit(0)
 
 def update_bot(name, token, guild_id, frame, bot): # used to updated a bots infomation
     if name == bot.name_ or len(name)==0:
@@ -314,7 +315,7 @@ def launch(): # main tkinter loop which hold sidebar and launches help page init
 
     help(root, workspace)
 
-    #root.protocol("WM_DELETE_WINDOW", on_close())
+    root.protocol("WM_DELETE_WINDOW", on_close)
     root.mainloop()
 
 if __name__ == "__main__":
