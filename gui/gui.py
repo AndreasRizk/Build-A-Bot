@@ -1,3 +1,4 @@
+from distutils import extension
 import os, signal
 import pickle
 import subprocess
@@ -43,6 +44,7 @@ Bots = {}
 if (exists("gui/data/existing_bots")):
         with open("gui/data/existing_bots","rb") as f:
             Bots = pickle.load(f)
+
 def save(): # Saves the updated bot data
     if not (exists("gui/data/")):
         os.mkdir("gui/data/")
@@ -51,6 +53,22 @@ def save(): # Saves the updated bot data
 
 
 #############Helper Functions##################
+#function to close the popup window
+def close_win(top):
+   top.destroy()
+
+#function to open the Popup Dialogue
+def popupwin(frame,text):
+   top= Toplevel(frame, bg=main_color)
+   top.geometry("250x150")
+   top.resizable(width=False ,height=False)
+
+   markov_label = tk.Label(top, text=text, font=('Arial',14), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
+   markov_label.pack()
+
+   button= Button(top, text="Close", bg=button_color, command=lambda:close_win(top))
+   button.pack(pady=5, side= TOP)
+
 def githublink():
     webbrowser.open_new(r"https://github.com/Andy-8/Build-A-Bot")
 
@@ -73,12 +91,23 @@ def create_new_bot(name, token, guild_id,frame): # creates nwe bot
     save()
     edit_bot(frame,Bots[name])
 
-def open_file(frame): # adds external file into bot extensiosn
-    file_path = tkf.askopenfile(mode='r', filetypes=[('Python files', '*py')])
+def add_file(frame,dir): # adds external file into bot extensiosn
+    file_path = tkf.askopenfile(mode='r')
     if file_path is not None:
-        file_name = os.path.basename(file_path.name)
-        shutil.copyfile(file_path.name, "extensions/"+file_name)
+        try:
+            shutil.copy(file_path.name, dir)
+        except:
+            file = file_path.name[::-1]
+            file = file[:file.find("/")]
+            file[::-1]
+            popupwin(f"Error copying file \"{file}\"")
         package_handler(frame)
+
+def remove_file(frame,dir,box): # adds external file into bot extensiosn
+    selected = box.get(box.curselection()[0])
+    if exists(dir+"/"+selected):
+        os.remove(dir+"/"+selected)
+    package_handler(frame)
 
 def include_ext(dir_name, exe): # includes an extentions in a bots extensions
     if exists(dir_name+"/"+exe):
@@ -118,6 +147,24 @@ def bot_delete(frame, bot): # deletes a bot
     save()
     bot_selection(frame)
 
+def create_listbox(frame, dir,col): #creates a list box for file management
+    dir_list = os.listdir(dir)
+    dir_list = [dirName for dirName in dir_list if 'py' or 'txt' in dirName.lower()]
+    values = tk.StringVar(value=dir_list)
+
+    scroll = Scrollbar(frame)
+    scroll.grid(row=1, column=col+1, sticky=NS)
+
+    box = Listbox(frame, font=('Arial',15), height=24, width=30, listvariable=values, yscrollcommand = scroll.set)
+    box.grid(row=1, column=col)
+    scroll.config(command=box.yview)
+
+    add = tk.Button(frame, text ='Add File', bg=button_color, command = lambda:add_file(frame,dir))
+    add.grid(row=2, column=col)
+
+    remove = tk.Button(frame, text ='Remove File', bg=button_color, command = lambda:remove_file(frame,dir,box))
+    remove.grid(row=3, column=col)
+
 #############Frame Loaders##################
 def bot_selection(frame): # select an already created bot
     clear(frame)
@@ -140,7 +187,6 @@ def bot_running(frame, bot): # frame for a running bot
     clear(frame)
     stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
     stop.pack()
-
 
 def edit_bot_data(frame,bot): # frame to edit bot data
     clear(frame)
@@ -180,7 +226,13 @@ def edit_bot(frame, bot): # for editing a bots commands and running the bot
             os.mkdir(dir_name)
             os.mkdir(f"{dir_name}/data")
 
+
         dir_list = os.listdir("extensions")
+        ext = os.listdir(dir_name)
+        for file in ext:
+            if not file in dir_list and file[-3:] == ".py":
+                os.remove(dir_name+"/"+file)
+
         dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
 
         count=0
@@ -224,7 +276,7 @@ def create_bot(frame): # fram for creating a new bot
     spacer.pack()
     create.pack()
 
-def help(root, frame): # initial help page frame
+def help(frame): # initial help page frame
     clear(frame)
     #Initial help page
     ghimg = PhotoImage(file= "gui/images/github.png")
@@ -248,39 +300,24 @@ def help(root, frame): # initial help page frame
 def package_handler(frame): # package handling frame
     clear(frame)
 
-    ph_label = tk.Label(frame, text="Package Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
-    ph_label.grid(row=0, column=0, sticky=NW)
+    ext_label = tk.Label(frame, text="Extensions Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
+    ext_label.grid(row=0, column=0)
 
-    scroll = Scrollbar(frame)
-    scroll.grid(row=1, column=1, sticky=NS)
+    markov_label = tk.Label(frame, text="Markov Data Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
+    markov_label.grid(row=0, column=2)
 
-    exes = Text(frame, font=('Arial',15), wrap=WORD, height=24, width=60, yscrollcommand = scroll.set)
-
-    dir_list = os.listdir("extensions")
-    dir_list = [dirName for dirName in dir_list if 'py' in dirName.lower()]
-
-    for name in dir_list:
-        exes.insert(END,name+"\n")
-    exes.config(state=DISABLED)
-    # exes.pack(side=tk.TOP, fill=BOTH)
-    exes.grid(row=1, column=0)
-    scroll.config(command=exes.yview)
-
-    new_exes = tk.Label(frame, text='Upload new extension ',bg=main_color, fg="black")
-    new_exes.grid(row=2, column=0, padx=10)
-
-    adharbtn = tk.Button(frame, text ='Choose File', bg=button_color, command = lambda:open_file(frame))
-    adharbtn.grid(row=2, column=1)
+    create_listbox(frame, "extensions",0)
+    create_listbox(frame, "extensions/data/markov_raw",2)
 
 def launch(): # main tkinter loop which hold sidebar and launches help page initially
     root = tk.Tk()
     root.title("Build-A-Bot")
     root.iconbitmap("logo.ico")
     root.resizable(width=False, height=False)
+    root.protocol("WM_DELETE_WINDOW", on_close)
 
     canvas = tk.Canvas(root,height=750,width=1000,bg=main_color)
     canvas.pack()
-
 
     frame = tk.Frame(root, bg=sidebar_color)
     frame.place(relwidth=1,relheight=1, relx=0.0, rely=0.0)
@@ -293,7 +330,7 @@ def launch(): # main tkinter loop which hold sidebar and launches help page init
 
     #buttons on the sidebar
     logoimg = PhotoImage(file= "gui/images/bab.png")
-    logo = tk.Button(sideBar, image= logoimg, activebackground=sidebar_color, border=0, command=lambda : help(root, workspace))
+    logo = tk.Button(sideBar, image= logoimg, activebackground=sidebar_color, border=0, command=lambda : help(workspace))
     logo.pack(padx=35, pady=35)
     logo.config(highlightthickness=0)
 
@@ -312,10 +349,7 @@ def launch(): # main tkinter loop which hold sidebar and launches help page init
     fileexp.pack(padx=35, pady=35)
     fileexp.config(highlightthickness=0)
 
-
-    help(root, workspace)
-
-    root.protocol("WM_DELETE_WINDOW", on_close)
+    help(workspace)
     root.mainloop()
 
 if __name__ == "__main__":
