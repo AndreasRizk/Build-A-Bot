@@ -19,8 +19,8 @@ plugin = lightbulb.Plugin("markov")
 
 text_models = {}
 
-if (not os.path.exists(f"extensions/data/markov_user_data")):
-    os.makedirs(f"extensions/data/markov_user_data")
+if (not os.path.exists(f"extensions/data/markov_raw")):
+    os.makedirs(f"extensions/data/markov_raw")
 
 if (exists(f"extensions/data/text_models")): # Reads in saved markvov keys on launch if they exist
     with open(f"extensions/data/text_models","rb") as f:
@@ -46,13 +46,13 @@ for x in userList:
 @lightbulb.implements(lightbulb.SlashCommand)
 
 async def markov(ctx: lightbulb.Context) -> None:
-
+    user = ctx.options.user.lower()
     if (len(text_models) == 0):
         await ctx.respond("User has not entered any Markov data files")
         return
 
-    elif (ctx.options.user not in text_models.keys()):
-        await ctx.respond(f"Cannot find Markov data for {ctx.options.user}")
+    elif (user not in text_models.keys()):
+        await ctx.respond(f"Cannot find Markov data for {user}")
         return
 
     count = ctx.options.quantity
@@ -62,10 +62,10 @@ async def markov(ctx: lightbulb.Context) -> None:
     if length == None or length < 50:
         length = 300
 
-    response = ctx.options.user + ":```"
+    response = user + ":```"
 
     for i in range(count):
-        response += f"{i+1}. {text_models[ctx.options.user].make_short_sentence(length)}\n"
+        response += f"{i+1}. {text_models[user].make_short_sentence(length)}\n"
 
     response += '```'
     await ctx.respond(response)

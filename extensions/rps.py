@@ -11,23 +11,24 @@ plugin = lightbulb.Plugin("rps")
 async def rps(ctx: lightbulb.Context) -> None:
 	list = ["rock", "paper", "scissors"]
 	choice = random.choice(list)
+	user_choice = ctx.options.choice.lower()
 
-	if(ctx.options.choice != "rock" and ctx.options.choice != "scissors" and ctx.options.choice != "paper"):
+	if(user_choice != "rock" and user_choice != "scissors" and user_choice != "paper"):
 		await ctx.respond("Unrecognized choice, try again!")
 	else:
 		win = False
 		tie = False
-		if(ctx.options.choice == "rock"):
+		if(user_choice == "rock"):
 			if(choice == "rock"):
 				tie = True
 			elif(choice == "scissors"):
 				win = True
-		elif(ctx.options.choice == "paper"):
+		elif(user_choice == "paper"):
 			if(choice == "paper"):
 				tie = True
 			elif(choice == "rock"):
 				win = True
-		elif(ctx.options.choice == "scissors"):
+		elif(user_choice == "scissors"):
 			if(choice == "scissors"):
 				tie = True
 			elif(choice == "paper"):
