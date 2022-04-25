@@ -63,7 +63,7 @@ def popupwin(frame,text):
    top.geometry("250x150")
    top.resizable(width=False ,height=False)
 
-   markov_label = tk.Label(top, text=text, font=('Arial',14), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
+   markov_label = tk.Label(top, text=text, font=('Arial Bold',14), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
    markov_label.pack()
 
    button= Button(top, text="Close", bg=button_color, command=lambda:close_win(top))
@@ -155,7 +155,7 @@ def create_listbox(frame, dir,col): #creates a list box for file management
     scroll = Scrollbar(frame)
     scroll.grid(row=1, column=col+1, sticky=NS)
 
-    box = Listbox(frame, font=('Arial',15), height=24, width=30, listvariable=values, yscrollcommand = scroll.set)
+    box = Listbox(frame, font=('Arial Bold',15), height=24, width=30, listvariable=values, yscrollcommand = scroll.set)
     box.grid(row=1, column=col, padx=(30,0))
     scroll.config(command=box.yview)
 
@@ -169,9 +169,9 @@ def create_listbox(frame, dir,col): #creates a list box for file management
 def bot_selection(frame): # select an already created bot
     clear(frame)
     if len(Bots)==0:
-        no_bots = tk.Label(frame, text="You have not created any bots!", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
+        no_bots = tk.Label(frame, text="You have not created any bots!", font=('Arial Bold',20), relief=tk.RIDGE, borderwidth= 0, height=3, bg=main_color, fg="black")
         no_bots.pack()
-        create = tk.Button(frame, text="Create one!", padx=30, pady=20, font=('Arial',12), fg="black", bg=button_color, command=lambda : create_bot(frame))
+        create = tk.Button(frame, text="Create one!", padx=30, pady=20, font=('Arial Bold',12), fg="black", bg=button_color, command=lambda : create_bot(frame))
         create.pack()
 
     count = 0
@@ -179,33 +179,33 @@ def bot_selection(frame): # select an already created bot
         background = button_color
         if bot.name_ in runnning_bots: #if running make color green
             background = "#008000"
-        x = tk.Button(frame, text=bot_name, padx=30, pady=20, font=('Arial',12), fg="black", bg=background, command=lambda bot=bot: edit_bot(frame, bot))
+        x = tk.Button(frame, text=bot_name, padx=30, pady=20, font=('Arial Bold',12), fg="black", bg=background, command=lambda bot=bot: edit_bot(frame, bot))
         x.grid(row=count//3,column=count%3,padx=90,pady=50)
         count+=1
 
 def bot_running(frame, bot): # frame for a running bot
     clear(frame)
-    stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
+    stop = tk.Button( frame, text="Stop", anchor="center", padx=10, pady=10, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : botKILL(frame,bot))
     stop.pack()
 
 def edit_bot_data(frame,bot): # frame to edit bot data
     clear(frame)
 
-    name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
     name.insert(0,bot.name_)
 
-    token_title = tk.Label( frame, bg=main_color, text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    token_title = tk.Label( frame, bg=main_color, text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
     token.insert(0,bot.token_)
 
-    guild_title = tk.Label( frame, bg=main_color, text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    guild_title = tk.Label( frame, bg=main_color, text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
     guild_id.insert(0,bot.guild_id_)
 
     spacer = tk.Label( frame, bg=main_color, anchor="center", pady=30, width=15)
 
-    create = tk.Button( frame, text="Update", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg=button_color, command=lambda : update_bot(name.get(), token.get(), guild_id.get(), frame, bot))
+    create = tk.Button( frame, text="Update", anchor="center", padx=10, pady=20, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : update_bot(name.get(), token.get(), guild_id.get(), frame, bot))
 
     name_title.pack()
     name.pack()
@@ -221,11 +221,14 @@ def edit_bot(frame, bot): # for editing a bots commands and running the bot
         bot_running(frame,bot)
     else:
         clear(frame)
+
+        bot_name = tk.Label( frame, bg=main_color, text=f"{bot.name_}", width=15, font=('Arial Bold',30))
+        bot_name.grid(row=0, column=1)
+
         dir_name = f"bab/{bot.name_}_extensions"
         if not exists(dir_name):
             os.mkdir(dir_name)
             os.mkdir(f"{dir_name}/data")
-
 
         dir_list = os.listdir("extensions")
         ext = os.listdir(dir_name)
@@ -240,32 +243,32 @@ def edit_bot(frame, bot): # for editing a bots commands and running the bot
             c1 = tk.Checkbutton(frame, anchor="center", text=i, variable=IntVar(value=0), onvalue=1, offvalue=0, command=lambda exe = i:include_ext(dir_name, exe))
             if exists(dir_name+"/"+i):
                     c1.select()
-            c1.grid(row=count//3,column=count%3, padx=10, pady=10)
+            c1.grid(row=count//3+1,column=count%3, padx=10, pady=10)
             count+=1
-        delete = tk.Button( frame, text="Delete", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : bot_delete(frame,bot))
-        delete.grid(row=count//3+1,column=0, padx=30, pady=30)
+        delete = tk.Button( frame, text="Delete", padx=10, pady=10, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : bot_delete(frame,bot))
+        delete.grid(row=count//3+2,column=0, padx=30, pady=30)
 
-        edit = tk.Button( frame, text="Edit", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : edit_bot_data(frame,bot))
-        edit.grid(row=count//3+1,column=1, padx=30, pady=30)
+        edit = tk.Button( frame, text="Edit", padx=10, pady=10, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : edit_bot_data(frame,bot))
+        edit.grid(row=count//3+2,column=1, padx=30, pady=30)
 
-        run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
-        run.grid(row=count//3+1,column=2, padx=30, pady=30)
+        run = tk.Button( frame, text="Run", padx=10, pady=10, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : botRUN(frame,bot))
+        run.grid(row=count//3+2,column=2, padx=30, pady=30)
 
 def create_bot(frame): # fram for creating a new bot
     clear(frame)
 
-    name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
 
-    token_title = tk.Label( frame, bg=main_color, text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    token_title = tk.Label( frame, bg=main_color, text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
 
-    guild_title = tk.Label( frame, bg=main_color, text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
-    guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
+    guild_title = tk.Label( frame, bg=main_color, text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial Bold',20))
+    guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial Bold',20))
 
     spacer = tk.Label( frame, bg=main_color, anchor="center", pady=30, width=15)
 
-    create = tk.Button( frame, text="Create", anchor="center", padx=10, pady=20, font=('Arial',20), fg="black", bg=button_color, command=lambda : create_new_bot(name.get(), token.get(), guild_id.get(), frame))
+    create = tk.Button( frame, text="Create", anchor="center", padx=10, pady=20, font=('Arial Bold',20), fg="black", bg=button_color, command=lambda : create_new_bot(name.get(), token.get(), guild_id.get(), frame))
 
     name_title.pack()
     name.pack()
@@ -300,10 +303,10 @@ def help(frame): # initial help page frame
 def package_handler(frame): # package handling frame
     clear(frame)
 
-    ext_label = tk.Label(frame, text="Extensions Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
+    ext_label = tk.Label(frame, text="Extensions Handler", font=('Arial Bold',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
     ext_label.grid(row=0, column=0)
 
-    markov_label = tk.Label(frame, text="Markov Data Handler", font=('Arial',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
+    markov_label = tk.Label(frame, text="Markov Data Handler", font=('Arial Bold',20), relief=tk.RIDGE, borderwidth= 0, height=3, anchor="w", bg=main_color, fg="black")
     markov_label.grid(row=0, column=2)
 
     create_listbox(frame, "extensions",0)

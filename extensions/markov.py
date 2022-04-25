@@ -41,8 +41,7 @@ for x in userList:
 @plugin.command # allows the user to generate a number of statememnets with a certial lenght and emotion based on a perons markov chain
 @lightbulb.option("user",users, str, required=True)
 @lightbulb.option("quantity","Number of sentences to generate.", int, required=False)
-@lightbulb.option("length", "Length of sentences.", int, required=False)
-@lightbulb.option("emotion", "Happy, Sad, Fear, Suprise, Angry", str, required=False)
+@lightbulb.option("length", "Length of sentences (must be greater than 50).", int, required=False)
 @lightbulb.command("markov", description="Friend not online? This is close enough. We're CS majors. This bot is out friend")
 @lightbulb.implements(lightbulb.SlashCommand)
 
@@ -61,12 +60,12 @@ async def markov(ctx: lightbulb.Context) -> None:
     if count == None:
         count = 1
     if length == None or length < 50:
-        length = 50
+        length = 300
 
     response = ctx.options.user + ":```"
 
     for i in range(count):
-        response += f"{i}. {text_models[ctx.options.user].make_short_sentence(length)}\n"
+        response += f"{i+1}. {text_models[ctx.options.user].make_short_sentence(length)}\n"
 
     response += '```'
     await ctx.respond(response)
