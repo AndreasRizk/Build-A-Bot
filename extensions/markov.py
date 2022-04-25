@@ -60,13 +60,13 @@ async def markov(ctx: lightbulb.Context) -> None:
     length = ctx.options.length
     if count == None:
         count = 1
-    if length == None:
-        length = 400
+    if length == None or length < 50:
+        length = 50
 
-    response = ctx.options.user + " " + str(count) + ":```"
+    response = ctx.options.user + ":```"
 
     for i in range(count):
-        response += text_models[ctx.options.user].make_short_sentence(length) + "\n"
+        response += f"{i}. {text_models[ctx.options.user].make_short_sentence(length)}\n"
 
     response += '```'
     await ctx.respond(response)
