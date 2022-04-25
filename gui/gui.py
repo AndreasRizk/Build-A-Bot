@@ -156,14 +156,14 @@ def create_listbox(frame, dir,col): #creates a list box for file management
     scroll.grid(row=1, column=col+1, sticky=NS)
 
     box = Listbox(frame, font=('Arial',15), height=24, width=30, listvariable=values, yscrollcommand = scroll.set)
-    box.grid(row=1, column=col)
+    box.grid(row=1, column=col, padx=(30,0))
     scroll.config(command=box.yview)
 
     add = tk.Button(frame, text ='Add File', bg=button_color, command = lambda:add_file(frame,dir))
-    add.grid(row=2, column=col)
+    add.grid(row=2, column=col, pady=2, padx=(30,0))
 
     remove = tk.Button(frame, text ='Remove File', bg=button_color, command = lambda:remove_file(frame,dir,box))
-    remove.grid(row=3, column=col)
+    remove.grid(row=3, column=col, pady=2, padx=(30,0))
 
 #############Frame Loaders##################
 def bot_selection(frame): # select an already created bot
@@ -193,15 +193,15 @@ def edit_bot_data(frame,bot): # frame to edit bot data
 
     name_title = tk.Label( frame, bg=main_color, text="Name of Bot", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
     name = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
-    #name.insert(bot.name_,0)
+    name.insert(0,bot.name_)
 
     token_title = tk.Label( frame, bg=main_color, text="Bot Token", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
     token = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
-    #token.insert(bot.token_,0)
+    token.insert(0,bot.token_)
 
     guild_title = tk.Label( frame, bg=main_color, text="Guild ID", anchor="center", pady=50, padx=350, width=15, font=('Arial',20))
     guild_id = tk.Entry( frame, relief=tk.SUNKEN, width=30, font=('Arial',20))
-    #guild_id.insert(bot.guild_id_,0)
+    guild_id.insert(0,bot.guild_id_)
 
     spacer = tk.Label( frame, bg=main_color, anchor="center", pady=30, width=15)
 
